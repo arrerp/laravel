@@ -1,0 +1,154 @@
+<?php
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\UsersController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Materiais\FabricantesController;
+use App\Http\Controllers\Materiais\FichaTecnicaValorController;
+use App\Http\Controllers\Materiais\PrazoProdutoController;
+use App\Http\Controllers\Materiais\ProdutoController;
+use App\Http\Controllers\Materiais\ProdutoCategoriaController;
+use App\Http\Controllers\Materiais\ProdutoFamiliaController;
+use App\Http\Controllers\Materiais\ProdutoFichaTecnicaController;
+use App\Http\Controllers\Materiais\DepositoController;
+use App\Http\Controllers\Materiais\TabelaPrecoController;
+use App\Http\Controllers\Cadastros\ParceiroController;
+use App\Http\Controllers\Cadastros\CidadeController;
+use App\Http\Controllers\Cadastros\CadastroController;
+use App\Http\Controllers\Cadastros\ClienteController;
+use App\Http\Controllers\Cadastros\EnderecoController;
+use App\Http\Controllers\Cadastros\PessoalController;
+use App\Http\Controllers\Cadastros\EmpresaController;
+use App\Http\Controllers\User\UserController;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| is assigned the "api" middleware group. Enjoy building your API!
+|
+*/
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+Route::post('/register', [RegisterController::class, 'store']);
+Route::post('/login', [LoginController::class, 'index']);
+Route::post('/logout', [LogoutController::class, 'index']);
+
+Route::group(['middleware', 'auth:sanctum'], function() {
+    Route::post('user/update', [UserController::class, 'update']);
+
+    Route::get('admin/users', [UsersController::class, 'index']);
+
+    Route::delete('admin/user/{id}', [UsersController::class, 'delete']);
+
+    // Materiais - Fabricantes
+    Route::get('materiais/fabricantes', [FabricantesController::class, 'index']);
+    Route::post('materiais/fabricante', [FabricantesController::class, 'store']);
+    //Route::post('materiais/fabricante', [FabricantesController::class, 'store']);
+    Route::delete('materiais/fabricante/{id}', [FabricantesController::class, 'delete']);
+    Route::put('materiais/fabricante/{id}', [FabricantesController::class, 'update']);
+    // Materiais - Familia
+    Route::get('materiais/familias', [ProdutoFamiliaController::class, 'index']);
+    Route::post('materiais/familia', [ProdutoFamiliaController::class, 'store']);
+    Route::delete('materiais/familia/{id}', [ProdutoFamiliaController::class, 'delete']);
+    Route::put('materiais/familia/{id}', [ProdutoFamiliaController::class, 'update']);
+    // Materiais - Ficha Técnica
+    Route::get('materiais/fichas', [ProdutoFichaTecnicaController::class, 'index']);
+    Route::post('materiais/ficha', [ProdutoFichaTecnicaController::class, 'store']);
+    Route::delete('materiais/ficha/{id}', [ProdutoFichaTecnicaController::class, 'delete']);
+    Route::put('materiais/ficha/{id}', [ProdutoFichaTecnicaController::class, 'update']);
+    // Materiais - Valores Ficha Técnica
+    Route::get('materiais/fichaValor/{id}', [FichaTecnicaValorController::class, 'index']);
+    Route::post('materiais/fichaValor', [FichaTecnicaValorController::class, 'store']);
+    Route::delete('materiais/fichaValor/{id}', [FichaTecnicaValorController::class, 'delete']);
+    Route::put('materiais/fichaValor/{id}', [FichaTecnicaValorController::class, 'update']);
+    // Materiais - Produto 
+    Route::get('materiais/produtos', [ProdutoController::class, 'index']);
+    Route::get('materiais/produto/getPageInfo', [ProdutoController::class, 'getPageInfo']);
+    Route::get('materiais/produto/sku/{sku}', [ProdutoController::class, 'getbySku']);
+    Route::get('materiais/produto/id/{id}', [ProdutoController::class, 'getbyId']);
+    Route::post('materiais/produto', [ProdutoController::class, 'store']);
+    Route::put('materiais/produto', [ProdutoController::class, 'update']);
+    // Materiais - Prazos 
+    Route::get('materiais/prazosProduto', [PrazoProdutoController::class, 'index']);
+    // Materiais - Depósito 
+    Route::get('materiais/depositos', [DepositoController::class, 'index']);
+    Route::get('materiais/deposito/id/{id}', [DepositoController::class, 'getById']);
+    Route::get('materiais/deposito/getPageInfo', [DepositoController::class, 'getPageInfo']);
+    Route::post('materiais/deposito', [DepositoController::class, 'store']);
+    Route::delete('materiais/deposito/{id}', [DepositoController::class, 'delete']);
+    Route::put('materiais/deposito/{id}', [DepositoController::class, 'update']);
+    // Cadastro - Parceiro 
+    Route::get('cadastros/parceiros', [ParceiroController::class, 'index']);
+    Route::post('cadastros/parceiro', [ParceiroController::class, 'store']);
+    Route::delete('cadastros/parceiro/{id}', [ParceiroController::class, 'delete']);
+    Route::put('cadastros/parceiro/{id}', [ParceiroController::class, 'update']);
+    // Materiais - Cidade 
+    Route::get('cadastros/cidades', [CidadeController::class, 'index']);
+    Route::get('cadastros/cidade/id/{id}', [CidadeController::class, 'getById']);
+    Route::get('cadastros/cidade/getPageInfo', [CidadeController::class, 'getPageInfo']);
+    Route::get('cadastros/cidade/ibge/{ibge}', [CidadeController::class, 'getCidadeByIbge']);
+    Route::post('cadastros/cidade', [CidadeController::class, 'store']);
+    Route::delete('cadastros/cidade/{id}', [CidadeController::class, 'delete']);
+    Route::put('cadastros/cidade/{id}', [CidadeController::class, 'update']);
+    // Materiais - Categoria 
+    Route::get('materiais/produtos/categorias', [ProdutoCategoriaController::class, 'index']);
+    Route::get('materiais/produtos/categoria/{id}', [ProdutoCategoriaController::class, 'getById']);
+    Route::post('materiais/produtos/categoria/getPageInfo', [ProdutoCategoriaController::class, 'getPageInfo']);
+    Route::post('materiais/produtos/categoria', [ProdutoCategoriaController::class, 'store']);
+    Route::delete('materiais/produtos/categoria/{id}', [ProdutoCategoriaController::class, 'delete']);
+    Route::put('materiais/produtos/categoria/{id}', [ProdutoCategoriaController::class, 'update']);
+    // Cadastro - Cadastros 
+    Route::get('cadastros/cadastros', [CadastroController::class, 'index']);
+    Route::get('cadastros/cadastro/id/{id}', [CadastroController::class, 'getById']);
+    Route::get('cadastros/cadastro/cnpjCpf/{cnpjCpf}', [CadastroController::class, 'existsCnpjCpf']);
+    Route::get('cadastros/cadastro/getPageInfo', [CadastroController::class, 'getPageInfo']);
+    Route::post('cadastros/cadastro', [CadastroController::class, 'store']);
+    Route::delete('cadastros/cadastro/{id}', [CadastroController::class, 'delete']);
+    Route::put('cadastros/cadastro/{id}', [CadastroController::class, 'update']);
+    // Cadastro - Cliente 
+    Route::get('cadastros/cadastro/{id}/cliente', [ClienteController::class, 'getById']);
+    Route::post('cadastros/cadastro/{id}/cliente', [ClienteController::class, 'store']);
+    Route::delete('cadastros/cadastro/{id}/cliente', [ClienteController::class, 'delete']);
+    Route::put('cadastros/cadastro/{id}/cliente', [ClienteController::class, 'update']);
+    // Cadastro - Endereço 
+    Route::get('cadastros/cadastro/{id}/enderecos', [EnderecoController::class, 'index']);
+    Route::get('cadastros/endereco/{id}', [EnderecoController::class, 'getById']);
+    Route::post('cadastros/cadastro/{id}/endereco', [EnderecoController::class, 'store']);
+    Route::delete('cadastros/endereco/{id}', [EnderecoController::class, 'delete']);
+    Route::put('cadastros/endereco/{id}', [EnderecoController::class, 'update']);
+    Route::get('cadastros/cadastro/endereco/getPageInfo', [EnderecoController::class, 'getPageInfo']);
+    // Cadastro - Pessoal 
+    Route::get('cadastros/cadastro/{id}/pessoal', [PessoalController::class, 'getById']);
+    Route::post('cadastros/cadastro/{id}/pessoal', [PessoalController::class, 'store']);
+    Route::delete('cadastros/cadastro/pessoal/{id}', [PessoalController::class, 'delete']);
+    Route::put('cadastros/cadastro/{id}/pessoal', [PessoalController::class, 'update']);
+    // Cadastro - Parceiro 
+    Route::get('cadastros/cadastro/{id}/parceiro', [ParceiroController::class, 'getById']);
+    Route::post('cadastros/cadastro/{id}/parceiro', [ParceiroController::class, 'store']);
+    Route::delete('cadastros/cadastro/parceiro/{id}', [ParceiroController::class, 'delete']);
+    Route::put('cadastros/cadastro/{id}/parceiro', [ParceiroController::class, 'update']);
+    // Cadastro - Empresa 
+    Route::get('cadastros/cadastro/{id}/empresa', [EmpresaController::class, 'getById']);
+    Route::post('cadastros/cadastro/{id}/empresa', [EmpresaController::class, 'store']);
+    Route::delete('cadastros/cadastro/empresa/{id}', [EmpresaController::class, 'delete']);
+    Route::put('cadastros/cadastro/{id}/empresa', [EmpresaController::class, 'update']);
+    // Materiais - Tabela Preços
+    Route::get('materiais/tabPreco/{id}', [TabelaPrecoController::class, 'index']);
+    Route::post('materiais/tabPreco/{id}', [TabelaPrecoController::class, 'store']);
+    Route::delete('materiais/tabPreco/{id}', [TabelaPrecoController::class, 'delete']);
+    Route::put('materiais/tabPreco/{id}', [TabelaPrecoController::class, 'update']);    
+    Route::get('materiais/tabPreco/getPageInfo', [TabelaPrecoController::class, 'getPageInfo']);
+    Route::get('materiais/tabPreco/{id}', [PessoalController::class, 'getByEmpresa']);
+});
+
+
